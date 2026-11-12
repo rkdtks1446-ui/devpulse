@@ -1,0 +1,40 @@
+name: Collect DORA Metrics & Weekly Report
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  dora-metrics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Collect DORA 4 Metrics to JSON
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p metrics
+          node scripts/collect-dora.js > metrics/dora-metrics.json
+
+      - name: Upload DORA JSON Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dora-metrics-json
+          path: metrics/dora-metrics.json
+
+      - name: Generate & Commit Weekly Report
+        run: |
+          node scripts/generate-report.js metrics/dora-metrics.json > docs/DORA_WEEKLY_REPORT.md
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add metrics/dora-metrics.json docs/DORA_WEEKLY_REPORT.md
+          git diff --quiet && git diff --staged --quiet || git commit -m "docs: update weekly DORA metrics report"
+          git push

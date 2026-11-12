@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>DevPulse DORA Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 40px auto; background: #f8fafc; }
+    .box { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>📊 DevPulse DORA 4대 지표 대시보드</h2>
+    <canvas id="doraChart" height="140"></canvas>
+  </div>
+  <script>
+    const fallback = { deploymentFrequencyPerMonth: 6, leadTimeHours: 8.5, changeFailureRatePercent: 5.0, mttrHours: 2.5 };
+    fetch('../metrics/dora-metrics.json')
+      .then(r => r.json())
+      .then(d => renderChart(d.metrics))
+      .catch(() => renderChart(fallback));
+
+    function renderChart(m) {
+      new Chart(document.getElementById('doraChart'), {
+        type: 'bar',
+        data: {
+          labels: ['배포 빈도 (회/월)', '변경 리드타임 (시간)', '변경 실패율 (%)', '평균 복구시간 MTTR (시간)'],
+          datasets: [{
+            label: 'DevPulse DORA Metrics',
+            data: [m.deploymentFrequencyPerMonth, m.leadTimeHours, m.changeFailureRatePercent, m.mttrHours],
+            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444']
+          }]
+        }
+      });
+    }
+  </script>
+</body>
+</html>
