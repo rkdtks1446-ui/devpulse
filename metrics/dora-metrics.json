@@ -1,0 +1,10 @@
+{
+  "repository": "rkdtks1446-ui/devpulse",
+  "collectedAt": "2026-11-12T06:51:53.056Z",
+  "metrics": {
+    "deploymentFrequencyPerMonth": 4,
+    "leadTimeHours": 8.5,
+    "changeFailureRatePercent": 5,
+    "mttrHours": 2.5
+  }
+}
