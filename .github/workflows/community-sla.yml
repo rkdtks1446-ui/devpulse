@@ -1,0 +1,71 @@
+name: Community Auto-Response, SLA & Weekly Summary
+
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  auto-welcome:
+    if: github.event_name == 'issues' || github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Welcome First-Time Contributors
+        uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: |
+            안녕하세요! DevPulse 저장소에 첫 이슈를 등록해 주셔서 감사합니다.
+            담당자 확인 후 24~48시간 이내에 답변드리겠습니다. (`CONTRIBUTING.md` 참고)
+          pr-message: |
+            첫 Pull Request를 제출해 주셔서 감사합니다!
+            코드 리뷰는 `[MUST]` / `[SHOULD]` / `[NIT]` 태그 기준으로 진행됩니다.
+
+  sla-tracker-and-summary:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Issue SLA (48h) and Generate Weekly Summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const now = Date.now();
+            const slaMs = 48 * 60 * 60 * 1000;
+
+            const { data: openIssues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              per_page: 50
+            });
+
+            const pureIssues = openIssues.filter(i => !i.pull_request);
+            let breachedCount = 0;
+
+            for (const issue of pureIssues) {
+              const ageMs = now - new Date(issue.created_at).getTime();
+              const hasTriage = issue.labels.some(l => l.name === 'needs-triage');
+              if (ageMs > slaMs && !hasTriage) {
+                breachedCount++;
+                await github.rest.issues.addLabels({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  labels: ['needs-triage']
+                });
+              }
+            }
+
+            console.log(`=== DevPulse 주간 이슈 및 SLA 요약 ===`);
+            console.log(`- 현재 미해결(Open) 이슈 수: ${pureIssues.length}건`);
+            console.log(`- SLA(48시간) 초과 신규 라벨(needs-triage) 부착: ${breachedCount}건`);
