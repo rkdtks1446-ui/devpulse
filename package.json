@@ -1,0 +1,16 @@
+{
+  "name": "devpulse",
+  "version": "1.0.0",
+  "description": "GitHub 활동 데이터 기반 팀 프로젝트 진척도 시각화 및 코드 리뷰 보조 플랫폼",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "eslint src tests",
+    "test": "jest --coverage",
+    "build": "node src/index.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0"
+  }
+}

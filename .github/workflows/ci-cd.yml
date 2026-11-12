@@ -1,0 +1,76 @@
+name: DevPulse CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            app:
+              - 'src/**'
+              - 'tests/**'
+              - 'package*.json'
+
+  test-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: ['18', '20']
+    uses: ./.github/workflows/reusable-test.yml
+    with:
+      os: ${{ matrix.os }}
+      node-version: ${{ matrix.node-version }}
+
+  build-and-artifact:
+    needs: test-matrix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node & Cache
+        uses: ./.github/actions/setup-node-cached
+        with:
+          node-version: '20'
+
+      - name: Build DevPulse Bundle & Manifest
+        env:
+          DEVPULSE_API_TOKEN: ${{ secrets.DEVPULSE_API_TOKEN }}
+        run: npm run build
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: devpulse-build-dist
+          path: dist/
+          retention-days: 7
+
+  selective-deploy:
+    needs: [detect-changes, build-and-artifact]
+    if: (github.ref == 'refs/heads/main') && (needs.detect-changes.outputs.app == 'true' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: devpulse-build-dist
+          path: dist/
+
+      - name: Deploy Release Package
+        run: |
+          echo "Deploying DevPulse build artifact..."
+          cat dist/build-manifest.json
+          echo "Deployment completed successfully!"

@@ -1,0 +1,29 @@
+name: Reusable Lint and Test Workflow
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+      node-version:
+        required: true
+        type: string
+
+jobs:
+  lint-and-test:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node & Cache
+        uses: ./.github/actions/setup-node-cached
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Jest Unit Tests
+        run: npm test
