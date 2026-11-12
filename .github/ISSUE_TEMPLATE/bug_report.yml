@@ -1,0 +1,26 @@
+name: Bug Report
+description: DevPulse 실행 오류 및 버그 제보
+title: "[Bug] "
+labels: ["type:bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 버그 현상 및 재현 경로
+      placeholder: 어떤 상황에서 오류가 발생했는지 순서대로 적어주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대 동작
+      placeholder: 정상적으로 동작했을 때의 결과를 적어주세요.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 실행 환경
+      placeholder: "예: Windows 11 / Node.js 20 / GitHub Actions"
+    validations:
+      required: true

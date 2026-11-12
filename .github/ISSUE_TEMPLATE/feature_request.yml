@@ -1,0 +1,19 @@
+name: Feature Request
+description: DevPulse 신규 기능 및 개선 제안
+title: "[Feat] "
+labels: ["type:feature"]
+body:
+  - type: textarea
+    id: background
+    attributes:
+      label: 제안 배경 및 문제 정의
+      placeholder: 이 기능이 왜 필요한지 설명해 주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 완료 조건 (Acceptance Criteria)
+      placeholder: "- [ ] 기능 구현 완료\n- [ ] 단위 테스트 통과"
+    validations:
+      required: true
