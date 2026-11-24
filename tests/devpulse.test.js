@@ -1,6 +1,8 @@
 const { classifyPrSize } = require('../src/prSizeAnalyzer');
 const { validateCommitMessage } = require('../src/commitValidator');
 const { parseSafeJson } = require('../src/jsonSanitizer');
+const fs = require('fs');
+const path = require('path');
 
 describe('DevPulse Core Modules', () => {
   test('classifyPrSize classifies line counts and handles invalid inputs', () => {
@@ -22,5 +24,15 @@ describe('DevPulse Core Modules', () => {
     const bomJson = '\uFEFF{"status":"ok","count":4}';
     expect(parseSafeJson(bomJson)).toEqual({ status: 'ok', count: 4 });
     expect(() => parseSafeJson('   ')).toThrow('Input JSON text is empty');
+  });
+
+  test('DORA workflow updates reports through a pull request', () => {
+    const workflowPath = path.join(__dirname, '..', '.github', 'workflows', 'dora-metrics.yml');
+    const workflow = fs.readFileSync(workflowPath, 'utf8');
+
+    expect(workflow).not.toMatch(/git push\s*(?:\r?\n|$)/);
+    expect(workflow).toMatch(/git switch -c ["']?\$branch/);
+    expect(workflow).toMatch(/git push origin ["']?HEAD:\$branch/);
+    expect(workflow).toMatch(/gh pr create/);
   });
 });
