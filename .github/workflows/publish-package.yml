@@ -1,0 +1,37 @@
+name: Publish npm Package to GitHub Packages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'src/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@rkdtks1446-ui'
+      - run: |
+          npm ci
+          npm test
+      - name: Publish Package if Version Not Exists
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if npm view @rkdtks1446-ui/devpulse@${PKG_VERSION} version >/dev/null 2>&1; then
+            echo "Version ${PKG_VERSION} already published. Skipping."
+          else
+            npm publish
+          fi

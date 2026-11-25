@@ -1,0 +1,61 @@
+name: Automated Security Audit Scan
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  npm-audit-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Run npm audit and generate report
+        run: |
+          npm audit --json > audit-result.json || true
+          node -e '
+            const fs = require("fs");
+            const data = JSON.parse(fs.readFileSync("audit-result.json", "utf8"));
+            const v = (data.metadata && data.metadata.vulnerabilities) || { info: 0, low: 0, moderate: 0, high: 0, critical: 0, total: 0 };
+            const summary = `Total: ${v.total} (Critical: ${v.critical}, High: ${v.high}, Moderate: ${v.moderate}, Low: ${v.low})`;
+            const md = [
+              "## Automated Security Scan Report (`npm audit`)",
+              `- **Scan Date**: ${new Date().toISOString()}`,
+              `- **Summary**: ${summary}`,
+              "",
+              "| Severity | Count |",
+              "| :--- | :---: |",
+              `| Critical | ${v.critical} |`,
+              `| High | ${v.high} |`,
+              `| Moderate | ${v.moderate} |`,
+              `| Low | ${v.low} |`,
+              `| **Total** | **${v.total}** |`
+            ].join("\n");
+            fs.writeFileSync("security-report.md", md);
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, md + "\n");
+          '
+      - name: Create or Update Security Audit Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('security-report.md', 'utf8');
+            const title = '[Security] Automated npm audit Vulnerability Scan Report';
+            const { owner, repo } = context.repo;
+            const { data: issues } = await github.rest.issues.listForRepo({ owner, repo, state: 'open', per_page: 30 });
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body });
+            } else {
+              await github.rest.issues.create({ owner, repo, title, body });
+            }
