@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevPulse — DORA Metrics & Code Review Assistant</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8; --accent: #38bdf8; --ok: #22c55e; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); padding: 2rem; }
+    .container { max-width: 960px; margin: 0 auto; }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid #334155; padding-bottom: 1rem; }
+    .badge { background: rgba(34, 197, 94, 0.15); color: var(--ok); padding: 0.35rem 0.75rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { background: var(--card); padding: 1.25rem; border-radius: 12px; border: 1px solid #334155; }
+    .metric-label { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.4rem; }
+    .metric-value { font-size: 1.75rem; font-weight: 700; color: var(--accent); }
+    .panel { background: var(--card); padding: 1.5rem; border-radius: 12px; border: 1px solid #334155; margin-bottom: 1.5rem; }
+    input, button { padding: 0.6rem 0.9rem; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: var(--text); font-size: 0.95rem; }
+    button { background: var(--accent); color: #0f172a; font-weight: 700; border: none; cursor: pointer; }
+    .row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .result { margin-top: 1rem; padding: 0.85rem; background: #0f172a; border-radius: 8px; font-family: monospace; color: #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1 style="margin:0;">DevPulse Dashboard (v1.1 Preview)</h1>
+        <p style="margin:0.3rem 0 0; color:var(--muted);">GitHub 활동 데이터 기반 DORA 지표 시각화 및 코드 리뷰 보조 플랫폼</p>
+      </div>
+      <span class="badge" id="env-badge">Production Live</span>
+    </header>
+
+    <section class="grid">
+      <div class="card"><div class="metric-label">Deployment Frequency</div><div class="metric-value">4.2 / wk</div></div>
+      <div class="card"><div class="metric-label">Lead Time for Changes</div><div class="metric-value">3.4 hrs</div></div>
+      <div class="card"><div class="metric-label">Change Failure Rate</div><div class="metric-value">6.5%</div></div>
+      <div class="card"><div class="metric-label">MTTR</div><div class="metric-value">28 min</div></div>
+    </section>
+
+    <section class="panel">
+      <h2 style="margin-top:0;">Weekly DORA Trend</h2>
+      <canvas id="doraChart" height="100"></canvas>
+    </section>
+
+    <section class="panel">
+      <h2 style="margin-top:0;">PR Size &amp; Conventional Commit Checker</h2>
+      <div class="row">
+        <input id="linesInput" type="number" value="180" placeholder="변경 라인 수" />
+        <input id="commitInput" type="text" value="feat(deploy): add cloud run healthcheck" style="flex:1; min-width:260px;" />
+        <button onclick="runCheck()">분석하기</button>
+      </div>
+      <div class="result" id="checkResult">분석 버튼을 눌러 PR 크기 및 커밋 규칙을 검증하세요.</div>
+    </section>
+  </div>
+
+  <script>
+    if (window.location.pathname.includes('/pr-preview/')) {
+      const badge = document.getElementById('env-badge');
+      badge.textContent = 'PR Preview Environment';
+      badge.style.color = '#facc15';
+      badge.style.background = 'rgba(250, 204, 21, 0.15)';
+    }
+
+    function runCheck() {
+      const lines = Math.max(0, Number(document.getElementById('linesInput').value) || 0);
+      const size = lines <= 200 ? 'Small' : lines <= 500 ? 'Medium' : 'Large';
+      const msg = document.getElementById('commitInput').value.trim();
+      const valid = /^(feat|fix|docs|style|refactor|test|chore|ci)(\([a-z0-9-]+\))?:\s.+$/.test(msg);
+      document.getElementById('checkResult').textContent =
+        `PR Size: ${size} (${lines} lines) | Conventional Commit: ${valid ? 'PASS' : 'FAIL'}`;
+    }
+
+    new Chart(document.getElementById('doraChart'), {
+      type: 'line',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [
+          { label: 'Deployments / Week', data: [2, 3, 4, 5], borderColor: '#38bdf8', tension: 0.3 },
+          { label: 'Change Failure Rate (%)', data: [15, 11, 8, 6.5], borderColor: '#f87171', tension: 0.3 }
+        ]
+      },
+      options: { plugins: { legend: { labels: { color: '#f8fafc' } } }, scales: { x: { ticks: { color: '#94a3b8' } }, y: { ticks: { color: '#94a3b8' } } } }
+    });
+  </script>
+</body>
+</html>
