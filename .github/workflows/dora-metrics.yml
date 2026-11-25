@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   dora-metrics:
@@ -35,6 +36,12 @@ jobs:
           node scripts/generate-report.js metrics/dora-metrics.json > docs/DORA_WEEKLY_REPORT.md
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add metrics/dora-metrics.json docs/DORA_WEEKLY_REPORT.md
-          git diff --quiet && git diff --staged --quiet || git commit -m "docs: update weekly DORA metrics report"
-          git push
+          if [ -n "$(git status --porcelain metrics/dora-metrics.json docs/DORA_WEEKLY_REPORT.md)" ]; then
+            git checkout -B chore/dora-weekly-report
+            git add metrics/dora-metrics.json docs/DORA_WEEKLY_REPORT.md
+            git commit -m "docs(dora): update weekly DORA metrics report"
+            git push -f origin chore/dora-weekly-report
+            GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" gh pr view chore/dora-weekly-report >/dev/null 2>&1 || \
+            GH_TOKEN="${{ secrets.GITHUB_TOKEN }}" gh pr create --base main --head chore/dora-weekly-report --title "docs(dora): update weekly DORA metrics report" --body "자동 수집된 주간 DORA 4대 지표 리포트입니다." || true
+          fi
+          cat docs/DORA_WEEKLY_REPORT.md >> "$GITHUB_STEP_SUMMARY" || true
