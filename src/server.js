@@ -4,6 +4,8 @@ const path = require('path');
 const { URL } = require('url');
 const { classifyPrSize } = require('./prSizeAnalyzer');
 const { validateCommitMessage } = require('./commitValidator');
+const { evaluateAllFlags } = require('./featureFlags');
+const { assignVariant, trackEvent } = require('./abTest');
 
 const PORT = Number(process.env.PORT) || 8080;
 const startTime = Date.now();
@@ -50,6 +52,23 @@ function createServer() {
         prSize: classifyPrSize(lines),
         validCommit: validateCommitMessage(commit)
       }));
+      return;
+    }
+
+    if (reqUrl.pathname === '/api/flags') {
+      const userId = reqUrl.searchParams.get('userId') || 'anonymous';
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ userId, flags: evaluateAllFlags({ userId }) }));
+      return;
+    }
+
+    if (reqUrl.pathname === '/api/experiment') {
+      const userId = reqUrl.searchParams.get('userId') || 'guest-1';
+      const eventType = reqUrl.searchParams.get('event') || 'exposure';
+      const assignment = assignVariant(userId);
+      const tracked = trackEvent({ userId, eventType });
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ assignment, tracked }));
       return;
     }
 
