@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "eslint src tests",
     "test": "jest --coverage",
-    "build": "node src/index.js"
+    "build": "node src/index.js",
+    "start": "node src/server.js"
   },
   "license": "MIT",
   "devDependencies": {

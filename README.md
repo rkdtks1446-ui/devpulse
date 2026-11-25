@@ -21,3 +21,8 @@ GitHub 활동 데이터 기반 팀 프로젝트 진척도 시각화 및 코드 �
 - **OSS License & Inner Source Roadmap**: [docs/OSS_AND_INNERSOURCE.md](docs/OSS_AND_INNERSOURCE.md)
 - **Project Retrospective**: [docs/RETROSPECTIVE.md](docs/RETROSPECTIVE.md)
 - **Code of Conduct & Security**: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | [SECURITY.md](SECURITY.md)
+
+## Live Deployment & Cloud Strategy
+- **Live Frontend (GitHub Pages)**: https://rkdtks1446-ui.github.io/devpulse/
+- **Docker & Cloud Deployment Strategy**: [docs/DOCKER_CLOUD_DEPLOYMENT_STRATEGY.md](docs/DOCKER_CLOUD_DEPLOYMENT_STRATEGY.md)
+- **Cloud Container IaC**: [Dockerfile](Dockerfile) | [docker-compose.yml](docker-compose.yml) | [render.yaml](render.yaml)

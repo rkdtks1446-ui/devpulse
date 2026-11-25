@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: devpulse-cloud-service
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
