@@ -1,0 +1,64 @@
+name: Automated Experiment Metrics & Weekly Report
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/**'
+      - 'src/experimentEngine.js'
+      - 'scripts/run-stage13-personas-and-ab.js'
+      - '.github/workflows/experiment-weekly-report.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  collect-and-report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Run Experiment Aggregation & Persona Verification
+        run: |
+          npm ci
+          node scripts/run-stage13-personas-and-ab.js
+          cat experiments/weekly-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Post or Update Weekly Experiment Report Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('experiments/weekly-report.md', 'utf8');
+            const title = '[Experiment Report] 2-Week A/B Test & 10-Persona Weekly Summary';
+            const { owner, repo } = context.repo;
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              per_page: 30
+            });
+
+            const existing = issues.find((i) => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body });
+            } else {
+              await github.rest.issues.create({ owner, repo, title, body });
+            }
+
+      - name: Upload Experiment Data & Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage13-experiment-report-and-data
+          path: experiments/
+          retention-days: 30
