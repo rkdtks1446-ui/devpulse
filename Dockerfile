@@ -13,6 +13,7 @@ ENV PORT=8080
 COPY --from=deps /app/node_modules ./node_modules
 COPY package.json ./
 COPY src ./src
+COPY config ./config
 COPY public ./public
 
 EXPOSE 8080

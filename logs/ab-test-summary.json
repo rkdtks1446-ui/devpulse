@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-11-25T17:18:55.603Z",
+  "totalUsers": 40,
+  "assignmentConsistencyPassed": true,
+  "metrics": {
+    "A": {
+      "exposures": 24,
+      "conversions": 15,
+      "conversionRate": 62.5
+    },
+    "B": {
+      "exposures": 16,
+      "conversions": 11,
+      "conversionRate": 68.75
+    }
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "generatedAt": "2026-11-25T17:18:55.604Z",
+  "scenarios": {
+    "progressivePromotion": {
+      "service": "devpulse-api",
+      "status": "COMPLETED",
+      "failedAtStage": null,
+      "activeTrafficPercent": 100,
+      "activeVersion": "1.2.0-canary",
+      "history": [
+        {
+          "stagePercent": 1,
+          "timestamp": "2026-11-25T17:18:55.604Z",
+          "metrics": {
+            "healthStatus": "ok",
+            "errorRate": 0.0081,
+            "p95LatencyMs": 120.4
+          },
+          "healthy": true,
+          "action": "PROMOTE"
+        },
+        {
+          "stagePercent": 10,
+          "timestamp": "2026-11-25T17:18:55.604Z",
+          "metrics": {
+            "healthStatus": "ok",
+            "errorRate": 0.009000000000000001,
+            "p95LatencyMs": 124
+          },
+          "healthy": true,
+          "action": "PROMOTE"
+        },
+        {
+          "stagePercent": 50,
+          "timestamp": "2026-11-25T17:18:55.604Z",
+          "metrics": {
+            "healthStatus": "ok",
+            "errorRate": 0.013000000000000001,
+            "p95LatencyMs": 140
+          },
+          "healthy": true,
+          "action": "PROMOTE"
+        },
+        {
+          "stagePercent": 100,
+          "timestamp": "2026-11-25T17:18:55.604Z",
+          "metrics": {
+            "healthStatus": "ok",
+            "errorRate": 0.018000000000000002,
+            "p95LatencyMs": 160
+          },
+          "healthy": true,
+          "action": "PROMOTE"
+        }
+      ]
+    },
+    "healthcheckAutoRollback": {
+      "service": "devpulse-api",
+      "status": "ROLLED_BACK",
+      "failedAtStage": 50,
+      "activeTrafficPercent": 0,
+      "activeVersion": "1.1.0",
+      "history": [
+        {
+          "stagePercent": 1,
+          "timestamp": "2026-11-25T17:18:55.604Z",
+          "metrics": {
+            "healthStatus": "ok",
+            "errorRate": 0.01,
+            "p95LatencyMs": 130
+          },
+          "healthy": true,
+          "action": "PROMOTE"
+        },
+        {
+          "stagePercent": 10,
+          "timestamp": "2026-11-25T17:18:55.604Z",
+          "metrics": {
+            "healthStatus": "ok",
+            "errorRate": 0.01,
+            "p95LatencyMs": 130
+          },
+          "healthy": true,
+          "action": "PROMOTE"
+        },
+        {
+          "stagePercent": 50,
+          "timestamp": "2026-11-25T17:18:55.604Z",
+          "metrics": {
+            "healthStatus": "degraded",
+            "errorRate": 0.14,
+            "p95LatencyMs": 680
+          },
+          "healthy": false,
+          "action": "ROLLBACK"
+        }
+      ]
+    }
+  }
+}

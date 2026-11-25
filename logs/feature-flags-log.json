@@ -1,0 +1,58 @@
+{
+  "generatedAt": "2026-11-25T17:18:55.595Z",
+  "targetUserEvaluation": {
+    "enableSmartPrSummary": {
+      "flagKey": "enableSmartPrSummary",
+      "enabled": true,
+      "reason": "default",
+      "userId": "sre-oncall"
+    },
+    "enableStrictCommitGate": {
+      "flagKey": "enableStrictCommitGate",
+      "enabled": false,
+      "reason": "default",
+      "userId": "sre-oncall"
+    },
+    "enableDoraAnomalyAlert": {
+      "flagKey": "enableDoraAnomalyAlert",
+      "enabled": true,
+      "reason": "target_user",
+      "userId": "sre-oncall"
+    },
+    "enableCompactDashboardUi": {
+      "flagKey": "enableCompactDashboardUi",
+      "enabled": false,
+      "reason": "rollout:50%",
+      "bucket": 50,
+      "userId": "sre-oncall"
+    }
+  },
+  "envOverrideEvaluation": {
+    "enableSmartPrSummary": {
+      "flagKey": "enableSmartPrSummary",
+      "enabled": false,
+      "reason": "env:FF_SMART_PR_SUMMARY",
+      "userId": "normal-user"
+    },
+    "enableStrictCommitGate": {
+      "flagKey": "enableStrictCommitGate",
+      "enabled": true,
+      "reason": "env:FF_STRICT_COMMIT_GATE",
+      "userId": "normal-user"
+    },
+    "enableDoraAnomalyAlert": {
+      "flagKey": "enableDoraAnomalyAlert",
+      "enabled": true,
+      "reason": "rollout:25%",
+      "bucket": 7,
+      "userId": "normal-user"
+    },
+    "enableCompactDashboardUi": {
+      "flagKey": "enableCompactDashboardUi",
+      "enabled": false,
+      "reason": "rollout:50%",
+      "bucket": 99,
+      "userId": "normal-user"
+    }
+  }
+}

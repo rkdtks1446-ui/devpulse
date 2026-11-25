@@ -14,6 +14,7 @@ GitHub 활동 데이터 기반 팀 프로젝트 진척도 시각화 및 코드 �
 - **Automated CI/CD (`.github/workflows/ci-cd.yml`)**: Ubuntu/Windows × Node 18/20 Matrix 테스트, Composite Action, Artifact 업로드 및 변경 감지 선택적 배포
 
 ## Documentation & Governance
+- **Feature Flags, A/B Test & Canary Rollout Report**: [docs/STAGE11_FLAGS_AB_CANARY.md](docs/STAGE11_FLAGS_AB_CANARY.md)
 - **Contributing & Branch Strategy**: [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Code Review Guidelines**: [docs/REVIEW_GUIDE.md](docs/REVIEW_GUIDE.md)
 - **Architecture Decision Records**: [docs/adr/001-zero-dependency-dora-collector.md](docs/adr/001-zero-dependency-dora-collector.md)

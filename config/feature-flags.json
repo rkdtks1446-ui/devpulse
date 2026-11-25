@@ -1,0 +1,30 @@
+{
+  "enableSmartPrSummary": {
+    "description": "PR 변경량 기반 자동 리뷰 요약 카드 표시",
+    "enabled": true,
+    "envVar": "FF_SMART_PR_SUMMARY",
+    "targetUsers": ["rkdtks1446-ui", "beta-reviewer-1"],
+    "rolloutPercentage": 100
+  },
+  "enableStrictCommitGate": {
+    "description": "Conventional Commits 미준수 시 엄격 차단 모드",
+    "enabled": false,
+    "envVar": "FF_STRICT_COMMIT_GATE",
+    "targetUsers": ["qa-lead", "release-bot"],
+    "rolloutPercentage": 0
+  },
+  "enableDoraAnomalyAlert": {
+    "description": "DORA 변경 실패율 급증 시 실시간 경고 배너 표시",
+    "enabled": false,
+    "envVar": "FF_DORA_ANOMALY_ALERT",
+    "targetUsers": ["sre-oncall", "rkdtks1446-ui"],
+    "rolloutPercentage": 25
+  },
+  "enableCompactDashboardUi": {
+    "description": "모바일·저해상도 대응 컴팩트 대시보드 레이아웃",
+    "enabled": false,
+    "envVar": "FF_COMPACT_DASHBOARD_UI",
+    "targetUsers": ["ux-tester-1"],
+    "rolloutPercentage": 50
+  }
+}

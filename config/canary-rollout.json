@@ -1,0 +1,12 @@
+{
+  "service": "devpulse-api",
+  "targetVersion": "1.2.0-canary",
+  "stableVersion": "1.1.0",
+  "stages": [1, 10, 50, 100],
+  "healthThresholds": {
+    "maxErrorRate": 0.05,
+    "maxP95LatencyMs": 300,
+    "requireHealthOk": true
+  },
+  "autoRollbackOnFailure": true
+}

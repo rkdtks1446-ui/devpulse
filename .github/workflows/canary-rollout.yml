@@ -1,0 +1,55 @@
+name: Canary Rollout & Feature Flag Verification
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'config/**'
+      - 'src/featureFlags.js'
+      - 'src/abTest.js'
+      - 'src/canaryRollout.js'
+      - 'scripts/run-stage11-experiments.js'
+      - '.github/workflows/canary-rollout.yml'
+  workflow_dispatch:
+
+jobs:
+  verify-flags-ab-canary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install & Run Stage 11 Tests
+        run: |
+          npm ci
+          npm run lint
+          npm test
+
+      - name: Run Canary 1%-10%-50%-100% & Auto-Rollback Simulation
+        run: |
+          node scripts/run-stage11-experiments.js
+          node -e '
+            const fs = require("fs");
+            const canary = JSON.parse(fs.readFileSync("logs/canary-rollout-log.json", "utf8"));
+            const ab = JSON.parse(fs.readFileSync("logs/ab-test-summary.json", "utf8"));
+            const lines = [
+              "## Stage 11: Feature Flags, A/B Test & Canary Rollout Summary",
+              `- **A/B Assignment Consistency**: ${ab.assignmentConsistencyPassed ? "PASS (100%)" : "FAIL"}`,
+              `- **Variant A Conversion Rate**: ${ab.metrics.A.conversionRate}% (${ab.metrics.A.conversions}/${ab.metrics.A.exposures})`,
+              `- **Variant B Conversion Rate**: ${ab.metrics.B.conversionRate}% (${ab.metrics.B.conversions}/${ab.metrics.B.exposures})`,
+              `- **Canary Happy Path (1%->10%->50%->100%)**: **${canary.scenarios.progressivePromotion.status}** (Active: ${canary.scenarios.progressivePromotion.activeVersion})`,
+              `- **Canary Failure Auto-Rollback (50% Spike)**: **${canary.scenarios.healthcheckAutoRollback.status}** (Reverted to ${canary.scenarios.healthcheckAutoRollback.activeVersion}, Traffic: ${canary.scenarios.healthcheckAutoRollback.activeTrafficPercent}%)`
+            ];
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join("\n") + "\n");
+          '
+
+      - name: Upload Experiment & Canary Logs Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage11-experiment-and-canary-logs
+          path: logs/
+          retention-days: 14
