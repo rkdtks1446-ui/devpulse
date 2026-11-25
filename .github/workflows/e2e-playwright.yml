@@ -1,0 +1,53 @@
+name: Playwright E2E & Failure Screenshot Artifacts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/**'
+      - 'src/server.js'
+      - 'e2e/**'
+      - 'playwright.config.js'
+      - '.github/workflows/e2e-playwright.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  playwright-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies & Chromium browser
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Run Playwright E2E Test Suite
+        run: npm run test:e2e
+
+      - name: Verify Failure Screenshot Artifact Capture
+        run: DEMO_FAILURE_SCREENSHOT=1 npx playwright test --grep "failure screenshot artifact" || true
+
+      - name: Upload Playwright Failure Screenshots & Traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-failure-screenshots
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload Playwright HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
+          path: playwright-report/
+          retention-days: 14
