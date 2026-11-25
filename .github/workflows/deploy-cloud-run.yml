@@ -19,7 +19,7 @@ jobs:
   verify-and-deploy-cloud-run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Build Container Image for Verification
         run: docker build -t devpulse:ci-verify .
