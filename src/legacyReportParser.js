@@ -1,27 +1,40 @@
-function parseLegacyPrReport(raw) {
-  if (!raw) return { items: [], highRiskCount: 0, totalLines: 0 };
-  var lines = String(raw).split('\n');
-  var items = [];
-  var high = 0;
-  var total = 0;
-  for (var i = 0; i < lines.length; i++) {
-    var l = lines[i].trim();
-    if (l === '' || l.indexOf('#') === 0) continue;
-    var parts = l.split(',');
-    if (parts.length < 3) continue;
-    var id = parts[0].trim();
-    var chg = parseInt(parts[1].trim(), 10);
-    if (isNaN(chg) || chg < 0) chg = 0;
-    var rev = parseInt(parts[2].trim(), 10);
-    if (isNaN(rev) || rev < 0) rev = 0;
-    var risk = 'LOW';
-    if (chg > 500 && rev === 0) { risk = 'CRITICAL'; high++; }
-    else if (chg > 500 || (chg > 200 && rev === 0)) { risk = 'HIGH'; high++; }
-    else if (chg > 200) { risk = 'MEDIUM'; }
-    total += chg;
-    items.push({ id: id, changedLines: chg, reviewers: rev, risk: risk });
-  }
-  return { items: items, highRiskCount: high, totalLines: total };
+const LARGE_PR_LIMIT = 500;
+const MEDIUM_PR_LIMIT = 200;
+const HIGH_RISK_LEVELS = new Set(['HIGH', 'CRITICAL']);
+
+function toNonNegativeInt(rawValue) {
+  const parsed = Number.parseInt(String(rawValue).trim(), 10);
+  return Number.isNaN(parsed) || parsed < 0 ? 0 : parsed;
 }
 
-module.exports = { parseLegacyPrReport };
+function classifyRisk(changedLines, reviewers) {
+  if (changedLines > LARGE_PR_LIMIT && reviewers === 0) return 'CRITICAL';
+  if (changedLines > LARGE_PR_LIMIT || (changedLines > MEDIUM_PR_LIMIT && reviewers === 0)) return 'HIGH';
+  if (changedLines > MEDIUM_PR_LIMIT) return 'MEDIUM';
+  return 'LOW';
+}
+
+function parseRow(line) {
+  const trimmed = line.trim();
+  if (!trimmed || trimmed.startsWith('#')) return null;
+
+  const parts = trimmed.split(',');
+  if (parts.length < 3) return null;
+
+  const id = parts[0].trim();
+  const changedLines = toNonNegativeInt(parts[1]);
+  const reviewers = toNonNegativeInt(parts[2]);
+  return { id, changedLines, reviewers, risk: classifyRisk(changedLines, reviewers) };
+}
+
+function parseLegacyPrReport(raw) {
+  if (!raw) return { items: [], highRiskCount: 0, totalLines: 0 };
+
+  const items = String(raw).split('\n').map(parseRow).filter(Boolean);
+  const highRiskCount = items.filter((item) => HIGH_RISK_LEVELS.has(item.risk)).length;
+  const totalLines = items.reduce((sum, item) => sum + item.changedLines, 0);
+
+  return { items, highRiskCount, totalLines };
+}
+
+module.exports = { parseLegacyPrReport, classifyRisk, parseRow };
