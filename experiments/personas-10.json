@@ -1,0 +1,152 @@
+[
+  {
+    "id": "P01",
+    "userId": "persona-junior-fe",
+    "role": "신입 프런트엔드 개발자",
+    "behaviorPattern": "작은 UI PR을 자주 올리며 명확한 리뷰 체크리스트를 선호",
+    "llmSystemPrompt": "당신은 입사 6개월 차 프런트엔드 개발자입니다. 코드 리뷰 시 무엇을 먼저 수정해야 하는지 헷갈려 하며 명확한 우선순위 가이드를 선호합니다.",
+    "scenario": { "changedLines": 145, "commitMessage": "feat(ui): add dark theme badge", "baselineReviewSec": 210 },
+    "baseSatisfaction": 3.8,
+    "treatmentLiftScore": 0.9,
+    "feedbackByVariant": {
+      "A": "PR 크기 분류는 편하지만 어떤 코멘트를 먼저 고쳐야 할지 한눈에 안 들어옵니다.",
+      "B": "[MUST]/[SHOULD] 우선순위 체크리스트 덕분에 리뷰 수정 순서를 바로 파악해 시간을 크게 아꼈습니다."
+    },
+    "painPoint": "초심자용 컨벤션 예시 툴팁 추가 요청"
+  },
+  {
+    "id": "P02",
+    "userId": "persona-senior-be",
+    "role": "시니어 백엔드 아키텍트",
+    "behaviorPattern": "대규모 리팩토링 PR을 리뷰하며 아키텍처 리스크 탐지에 집중",
+    "llmSystemPrompt": "당신은 10년 차 백엔드 아키텍트입니다. 대규모 변경의 위험 신호와 커밋 이력 일관성을 엄격하게 평가합니다.",
+    "scenario": { "changedLines": 620, "commitMessage": "refactor(core): split metrics pipeline", "baselineReviewSec": 340 },
+    "baseSatisfaction": 3.9,
+    "treatmentLiftScore": 0.7,
+    "feedbackByVariant": {
+      "A": "Large PR 경고는 유용하나 핵심 결함 우선 검토 요약이 부족합니다.",
+      "B": "Large PR 자동 경고와 필수 수정 항목 분리로 500줄 이상 리뷰 부담이 확 줄었습니다."
+    },
+    "painPoint": "파일 경로별 위험도 가중치 커스터마이징 필요"
+  },
+  {
+    "id": "P03",
+    "userId": "sre-oncall",
+    "role": "DevOps / SRE 엔지니어",
+    "behaviorPattern": "배포 실패율(CFR)과 DORA 이상 징후 알람에 즉각 반응",
+    "llmSystemPrompt": "당신은 프로덕션 장애 대응을 담당하는 SRE입니다. 변경 실패율 급증 알림과 자동 롤백 가시성을 최우선으로 평가합니다.",
+    "scenario": { "changedLines": 260, "commitMessage": "ci(deploy): tune cloud run health probe", "baselineReviewSec": 250 },
+    "baseSatisfaction": 4.1,
+    "treatmentLiftScore": 0.8,
+    "feedbackByVariant": {
+      "A": "DORA 이상 경보 플래그가 활성화되어 유용하지만 리뷰 우선순위 연계가 약합니다.",
+      "B": "DORA 이상 경고와 [MUST] 체크리스트가 결합되어 장애 유발 PR을 병합 전에 차단하기 좋습니다."
+    },
+    "painPoint": "Slack/Discord 웹훅 실시간 알림 연동 희망"
+  },
+  {
+    "id": "P04",
+    "userId": "qa-lead",
+    "role": "QA 자동화 리드",
+    "behaviorPattern": "테스트 커버리지 미달 및 회귀 리스크를 꼼꼼히 검증",
+    "llmSystemPrompt": "당신은 품질 보증 리드입니다. 테스트 누락 여부와 커밋 규칙 위반을 엄격하게 검토합니다.",
+    "scenario": { "changedLines": 310, "commitMessage": "test(e2e): add failure screenshot capture", "baselineReviewSec": 280 },
+    "baseSatisfaction": 4.0,
+    "treatmentLiftScore": 0.7,
+    "feedbackByVariant": {
+      "A": "커밋 검증은 정확하지만 테스트 보강 항목이 일반 코멘트와 섞여 보입니다.",
+      "B": "필수 테스트 항목을 [MUST]로 고정할 수 있어 릴리스 게이트 검증 속도가 빨라졌습니다."
+    },
+    "painPoint": "커버리지 증감(+/-%) 배지를 PR 요약 카드에 직접 표시 요청"
+  },
+  {
+    "id": "P05",
+    "userId": "beta-reviewer-1",
+    "role": "테크 리드 / 주 리뷰어",
+    "behaviorPattern": "하루 10건 이상 PR을 검토하며 리뷰 병목 최소화가 최우선",
+    "llmSystemPrompt": "당신은 팀의 모든 PR을 최종 승인하는 테크 리드입니다. 컨텍스트 전환 비용을 줄이는 요약 정보에 높은 점수를 줍니다.",
+    "scenario": { "changedLines": 410, "commitMessage": "feat(flags): support user targeting rollout", "baselineReviewSec": 300 },
+    "baseSatisfaction": 4.0,
+    "treatmentLiftScore": 0.9,
+    "feedbackByVariant": {
+      "A": "기본 리스트 UI는 여러 PR을 연속 검토할 때 시각적 피로도가 높습니다.",
+      "B": "스마트 PR 요약 카드와 우선순위 태그 덕분에 일일 리뷰 처리량이 눈에 띄게 늘었습니다."
+    },
+    "painPoint": "다중 PR 일괄 필터링 및 담당자별 대기 시간 표시 요청"
+  },
+  {
+    "id": "P06",
+    "userId": "persona-cs-leader",
+    "role": "컴퓨터공학과 캡스톤 팀장",
+    "behaviorPattern": "학업·과제 마감 속 팀원 진척도와 기여도를 빠르게 파악",
+    "llmSystemPrompt": "당신은 대학 소프트웨어공학 팀 프로젝트 팀장입니다. 팀원별 PR 크기와 주간 진행 상황을 한눈에 보고 싶어 합니다.",
+    "scenario": { "changedLines": 190, "commitMessage": "docs(sprint): update weekly velocity chart", "baselineReviewSec": 190 },
+    "baseSatisfaction": 3.9,
+    "treatmentLiftScore": 0.8,
+    "feedbackByVariant": {
+      "A": "주간 대시보드는 깔끔하지만 팀원에게 리뷰 피드백 기준을 설명하기 어렵습니다.",
+      "B": "체크리스트 형식이 명확해 팀원 모두가 별도 교육 없이도 일관된 코드 리뷰를 수행했습니다."
+    },
+    "painPoint": "주간 발표 자료용 PDF/이미지 원클릭 내보내기 요청"
+  },
+  {
+    "id": "P07",
+    "userId": "persona-oss-contributor",
+    "role": "오픈소스 첫 외부 기여자",
+    "behaviorPattern": "저장소 규칙에 익숙하지 않아 커밋 메시지 형식을 자주 실수",
+    "llmSystemPrompt": "당신은 처음 이 오픈소스에 PR을 올리는 외부 기여자입니다. 엄격한 규칙 실패 시 친절한 수정 가이드가 없으면 이탈하기 쉽습니다.",
+    "scenario": { "changedLines": 85, "commitMessage": "fixed typo in readme", "baselineReviewSec": 230 },
+    "baseSatisfaction": 3.2,
+    "treatmentLiftScore": 0.7,
+    "feedbackByVariant": {
+      "A": "커밋 메시지 FAIL만 뜨고 올바른 예시가 없어 첫 기여 진입 장벽이 높게 느껴집니다.",
+      "B": "체크리스트 안내가 도움은 되지만 커밋 메시지 자동 교정 제안 버튼이 있으면 더 좋겠습니다."
+    },
+    "painPoint": "Conventional Commit 오류 시 올바른 추천 문구 자동 제시 필요"
+  },
+  {
+    "id": "P08",
+    "userId": "persona-startup-fullstack",
+    "role": "스타트업 풀스택 개발자",
+    "behaviorPattern": "속도 중심의 잦은 배포를 선호하며 과도한 절차에 민감",
+    "llmSystemPrompt": "당신은 5인 스타트업의 풀스택 개발자입니다. 빠른 배포 속도를 중시하며 불필요한 리뷰 마찰을 싫어합니다.",
+    "scenario": { "changedLines": 170, "commitMessage": "feat(api): add fast health metrics endpoint", "baselineReviewSec": 160 },
+    "baseSatisfaction": 3.6,
+    "treatmentLiftScore": 0.6,
+    "feedbackByVariant": {
+      "A": "단순 리스트는 가볍지만 소규모 PR에서도 수동 확인 절차가 번거롭습니다.",
+      "B": "Small PR은 핵심 체크 항목만 빠르게 훑고 머지할 수 있어 배포 속도를 해치지 않습니다."
+    },
+    "painPoint": "Small PR(200줄 미만) 경량 리뷰 프리셋 옵션 요청"
+  },
+  {
+    "id": "P09",
+    "userId": "persona-security-eng",
+    "role": "애플리케이션 보안 엔지니어",
+    "behaviorPattern": "의존성 취약점과 입력 검증 누락 여부를 집중 점검",
+    "llmSystemPrompt": "당신은 보안 엔지니어입니다. 의존성 감사 결과와 예외 입력 처리 검증을 최우선으로 평가합니다.",
+    "scenario": { "changedLines": 240, "commitMessage": "fix(security): sanitize UTF-8 BOM JSON input", "baselineReviewSec": 270 },
+    "baseSatisfaction": 4.1,
+    "treatmentLiftScore": 0.7,
+    "feedbackByVariant": {
+      "A": "npm audit 자동 이슈는 좋으나 PR 화면에서 보안 체크 항목이 두드러지지 않습니다.",
+      "B": "보안 검토 항목을 [MUST]로 강제 노출해 취약 코드 머지 가능성을 크게 낮췄습니다."
+    },
+    "painPoint": "보안 민감 파일(auth, config) 변경 시 자동 보안 라벨 부착 요청"
+  },
+  {
+    "id": "P10",
+    "userId": "ux-tester-1",
+    "role": "모바일·원격 근무 프로덕트 디자이너 겸 개발자",
+    "behaviorPattern": "이동 중 태블릿·작은 화면으로 대시보드와 PR 요약을 확인",
+    "llmSystemPrompt": "당신은 작은 화면과 모바일 환경에서 자주 PR 상태를 점검하는 하이브리드 개발자입니다. 정보 밀도와 가독성을 중시합니다.",
+    "scenario": { "changedLines": 130, "commitMessage": "style(ui): refine compact dashboard cards", "baselineReviewSec": 200 },
+    "baseSatisfaction": 3.7,
+    "treatmentLiftScore": 0.8,
+    "feedbackByVariant": {
+      "A": "좁은 화면에서 일반 리스트 UI가 길어져 스크롤 피로도가 높습니다.",
+      "B": "컴팩트 UI 플래그와 우선순위 요약 카드 조합이 모바일 가독성을 크게 개선했습니다."
+    },
+    "painPoint": "모바일 뷰에서 차트 축 라벨 크기 확대 필요"
+  }
+]

@@ -1,0 +1,89 @@
+{
+  "experimentId": "pr_review_guidance_v1",
+  "featureFlag": "enableSmartPrSummary",
+  "period": "2026-11-12 ~ 2026-11-25 (14 Days)",
+  "generatedAt": "2026-11-25T17:33:57.919Z",
+  "abAnalysis": {
+    "daysObserved": 14,
+    "week1": {
+      "A": {
+        "exposures": 392,
+        "completions": 238,
+        "completionRate": 60.71,
+        "avgReviewSec": 221.8,
+        "defectsCaught": 46,
+        "defectCatchRate": 19.33
+      },
+      "B": {
+        "exposures": 399,
+        "completions": 303,
+        "completionRate": 75.94,
+        "avgReviewSec": 162.5,
+        "defectsCaught": 77,
+        "defectCatchRate": 25.41
+      }
+    },
+    "week2": {
+      "A": {
+        "exposures": 446,
+        "completions": 274,
+        "completionRate": 61.43,
+        "avgReviewSec": 216.6,
+        "defectsCaught": 57,
+        "defectCatchRate": 20.8
+      },
+      "B": {
+        "exposures": 458,
+        "completions": 368,
+        "completionRate": 80.35,
+        "avgReviewSec": 151.3,
+        "defectsCaught": 107,
+        "defectCatchRate": 29.08
+      }
+    },
+    "overall": {
+      "A": {
+        "exposures": 838,
+        "completions": 512,
+        "completionRate": 61.1,
+        "avgReviewSec": 219,
+        "defectsCaught": 103,
+        "defectCatchRate": 20.12
+      },
+      "B": {
+        "exposures": 857,
+        "completions": 671,
+        "completionRate": 78.3,
+        "avgReviewSec": 156.4,
+        "defectsCaught": 184,
+        "defectCatchRate": 27.42
+      }
+    },
+    "impact": {
+      "completionLiftPp": 17.2,
+      "reviewTimeReductionPercent": 28.58,
+      "zScore": 7.71,
+      "statisticallySignificant": true
+    }
+  },
+  "feedbackSummary": {
+    "totalRespondents": 10,
+    "avgCsat": 4.13,
+    "positiveRatePercent": 50,
+    "byVariant": {
+      "A": {
+        "count": 6,
+        "avgCsat": 3.75
+      },
+      "B": {
+        "count": 4,
+        "avgCsat": 4.7
+      }
+    }
+  },
+  "decision": {
+    "decision": "PERSEVERE",
+    "confidence": "HIGH",
+    "rationale": "통계적으로 유의미한 리뷰 완료율 상승, 리뷰 시간 단축 및 4.0 이상의 높은 사용자 만족도를 동시 달성했습니다."
+  }
+}

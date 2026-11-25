@@ -1,0 +1,26 @@
+name: Experiment Backlog Item
+description: Feature Flag 기반 A/B 실험 가설 및 지표 측정 백로그 등록
+title: "[EXP] "
+labels: ["experiment", "type:feature"]
+body:
+  - type: input
+    id: flag
+    attributes:
+      label: Target Feature Flag
+      placeholder: "예: enableSmartPrSummary"
+    validations:
+      required: true
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Experiment Hypothesis (가설)
+      placeholder: "무엇을 바꾸면 어떤 핵심 지표가 몇 % 개선될 것이라 예상하는지 작성"
+    validations:
+      required: true
+  - type: input
+    id: metrics
+    attributes:
+      label: Primary Metrics & Duration
+      placeholder: "예: 리뷰 완료율, 평균 리뷰 시간 / 14일(2주)"
+    validations:
+      required: true

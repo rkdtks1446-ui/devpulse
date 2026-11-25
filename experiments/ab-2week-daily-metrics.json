@@ -1,0 +1,254 @@
+[
+  {
+    "day": 1,
+    "date": "2026-11-12",
+    "week": 1,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 54,
+      "completions": 33,
+      "avgReviewSec": 224,
+      "defectsCaught": 6
+    },
+    "variantB": {
+      "exposures": 56,
+      "completions": 41,
+      "avgReviewSec": 168,
+      "defectsCaught": 10
+    }
+  },
+  {
+    "day": 2,
+    "date": "2026-11-13",
+    "week": 1,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 58,
+      "completions": 35,
+      "avgReviewSec": 220,
+      "defectsCaught": 7
+    },
+    "variantB": {
+      "exposures": 57,
+      "completions": 43,
+      "avgReviewSec": 165,
+      "defectsCaught": 11
+    }
+  },
+  {
+    "day": 3,
+    "date": "2026-11-14",
+    "week": 1,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 49,
+      "completions": 29,
+      "avgReviewSec": 228,
+      "defectsCaught": 5
+    },
+    "variantB": {
+      "exposures": 51,
+      "completions": 38,
+      "avgReviewSec": 166,
+      "defectsCaught": 9
+    }
+  },
+  {
+    "day": 4,
+    "date": "2026-11-15",
+    "week": 1,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 44,
+      "completions": 27,
+      "avgReviewSec": 225,
+      "defectsCaught": 5
+    },
+    "variantB": {
+      "exposures": 46,
+      "completions": 35,
+      "avgReviewSec": 164,
+      "defectsCaught": 9
+    }
+  },
+  {
+    "day": 5,
+    "date": "2026-11-16",
+    "week": 1,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 62,
+      "completions": 38,
+      "avgReviewSec": 218,
+      "defectsCaught": 8
+    },
+    "variantB": {
+      "exposures": 63,
+      "completions": 48,
+      "avgReviewSec": 160,
+      "defectsCaught": 12
+    }
+  },
+  {
+    "day": 6,
+    "date": "2026-11-17",
+    "week": 1,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 65,
+      "completions": 40,
+      "avgReviewSec": 219,
+      "defectsCaught": 8
+    },
+    "variantB": {
+      "exposures": 64,
+      "completions": 50,
+      "avgReviewSec": 158,
+      "defectsCaught": 13
+    }
+  },
+  {
+    "day": 7,
+    "date": "2026-11-18",
+    "week": 1,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 60,
+      "completions": 36,
+      "avgReviewSec": 221,
+      "defectsCaught": 7
+    },
+    "variantB": {
+      "exposures": 62,
+      "completions": 48,
+      "avgReviewSec": 159,
+      "defectsCaught": 13
+    }
+  },
+  {
+    "day": 8,
+    "date": "2026-11-19",
+    "week": 2,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 64,
+      "completions": 39,
+      "avgReviewSec": 217,
+      "defectsCaught": 8
+    },
+    "variantB": {
+      "exposures": 66,
+      "completions": 53,
+      "avgReviewSec": 155,
+      "defectsCaught": 15
+    }
+  },
+  {
+    "day": 9,
+    "date": "2026-11-20",
+    "week": 2,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 68,
+      "completions": 42,
+      "avgReviewSec": 216,
+      "defectsCaught": 9
+    },
+    "variantB": {
+      "exposures": 69,
+      "completions": 55,
+      "avgReviewSec": 152,
+      "defectsCaught": 16
+    }
+  },
+  {
+    "day": 10,
+    "date": "2026-11-21",
+    "week": 2,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 52,
+      "completions": 32,
+      "avgReviewSec": 222,
+      "defectsCaught": 6
+    },
+    "variantB": {
+      "exposures": 54,
+      "completions": 43,
+      "avgReviewSec": 154,
+      "defectsCaught": 12
+    }
+  },
+  {
+    "day": 11,
+    "date": "2026-11-22",
+    "week": 2,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 48,
+      "completions": 29,
+      "avgReviewSec": 220,
+      "defectsCaught": 6
+    },
+    "variantB": {
+      "exposures": 50,
+      "completions": 40,
+      "avgReviewSec": 153,
+      "defectsCaught": 11
+    }
+  },
+  {
+    "day": 12,
+    "date": "2026-11-23",
+    "week": 2,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 70,
+      "completions": 43,
+      "avgReviewSec": 215,
+      "defectsCaught": 9
+    },
+    "variantB": {
+      "exposures": 72,
+      "completions": 58,
+      "avgReviewSec": 150,
+      "defectsCaught": 17
+    }
+  },
+  {
+    "day": 13,
+    "date": "2026-11-24",
+    "week": 2,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 73,
+      "completions": 45,
+      "avgReviewSec": 214,
+      "defectsCaught": 10
+    },
+    "variantB": {
+      "exposures": 74,
+      "completions": 60,
+      "avgReviewSec": 148,
+      "defectsCaught": 18
+    }
+  },
+  {
+    "day": 14,
+    "date": "2026-11-25",
+    "week": 2,
+    "featureFlag": "enableSmartPrSummary",
+    "variantA": {
+      "exposures": 71,
+      "completions": 44,
+      "avgReviewSec": 215,
+      "defectsCaught": 9
+    },
+    "variantB": {
+      "exposures": 73,
+      "completions": 59,
+      "avgReviewSec": 149,
+      "defectsCaught": 18
+    }
+  }
+]
