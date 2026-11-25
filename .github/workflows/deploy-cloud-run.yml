@@ -1,0 +1,75 @@
+name: Cloud Container Deployment (GCP Cloud Run)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'src/**'
+      - 'public/**'
+      - 'package*.json'
+      - '.github/workflows/deploy-cloud-run.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  verify-and-deploy-cloud-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Container Image for Verification
+        run: docker build -t devpulse:ci-verify .
+
+      - name: Container Healthcheck & Metrics Smoke Test
+        run: |
+          docker run -d --name devpulse-smoke -p 8080:8080 devpulse:ci-verify
+          sleep 2
+          curl -fsS http://127.0.0.1:8080/health | tee health.json
+          curl -fsS http://127.0.0.1:8080/ready | tee ready.json
+          curl -fsS http://127.0.0.1:8080/metrics | tee metrics.json
+          docker rm -f devpulse-smoke
+
+      - name: Authenticate to Google Cloud
+        if: ${{ secrets.GCP_SA_KEY != '' && secrets.GCP_PROJECT_ID != '' }}
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Build & Push Image to GCP Artifact Registry
+        if: ${{ secrets.GCP_SA_KEY != '' && secrets.GCP_PROJECT_ID != '' }}
+        run: |
+          gcloud auth configure-docker asia-northeast3-docker.pkg.dev --quiet
+          IMAGE="asia-northeast3-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/devpulse/app:${{ github.sha }}"
+          docker tag devpulse:ci-verify "$IMAGE"
+          docker push "$IMAGE"
+          echo "DEPLOY_IMAGE=$IMAGE" >> "$GITHUB_ENV"
+
+      - name: Deploy Container to GCP Cloud Run with Healthcheck
+        if: ${{ secrets.GCP_SA_KEY != '' && secrets.GCP_PROJECT_ID != '' }}
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: devpulse-api
+          region: asia-northeast3
+          image: ${{ env.DEPLOY_IMAGE }}
+          flags: '--allow-unauthenticated --port=8080 --min-instances=0 --max-instances=3'
+
+      - name: Verify Live Cloud Run Healthcheck
+        if: ${{ secrets.GCP_SA_KEY != '' && secrets.GCP_PROJECT_ID != '' }}
+        run: curl -fsS "${{ steps.deploy.outputs.url }}/health"
+
+      - name: Record Deployment Verification Summary
+        run: |
+          {
+            echo "## Cloud Container Deployment Summary"
+            echo "- **Docker Healthcheck (`/health`, `/ready`, `/metrics`)**: PASSED"
+            if [ -n "${{ secrets.GCP_PROJECT_ID }}" ]; then
+              echo "- **Target Platform**: GCP Cloud Run (`asia-northeast3`)"
+            else
+              echo "- **Target Platform**: GCP Cloud Run (Secrets 미설정으로 CI 컨테이너 헬스체크 검증 모드 실행 완료 — \`GCP_SA_KEY\`, \`GCP_PROJECT_ID\` 등록 시 실서버 자동 배포 활성화)"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

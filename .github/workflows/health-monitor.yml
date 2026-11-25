@@ -1,0 +1,55 @@
+name: Service Healthcheck & Uptime Monitor
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  monitor-endpoints:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Live Frontend & Cloud Health Endpoints
+        id: check
+        run: |
+          FRONTEND_URL="https://rkdtks1446-ui.github.io/devpulse/"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$FRONTEND_URL" || echo "000")
+          LATENCY=$(curl -s -o /dev/null -w "%{time_total}" "$FRONTEND_URL" || echo "0")
+          echo "frontend_status=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "frontend_latency=$LATENCY" >> "$GITHUB_OUTPUT"
+
+          CLOUD_URL="${{ vars.CLOUD_RUN_URL }}"
+          CLOUD_STATUS="N/A"
+          if [ -n "$CLOUD_URL" ]; then
+            CLOUD_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "${CLOUD_URL}/health" || echo "000")
+          fi
+          echo "cloud_status=$CLOUD_STATUS" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "## Uptime & Healthcheck Monitoring Report"
+            echo "| Endpoint | HTTP Status | Latency |"
+            echo "| :--- | :---: | :---: |"
+            echo "| Frontend (\`$FRONTEND_URL\`) | **$STATUS** | ${LATENCY}s |"
+            echo "| Cloud Health (\`${CLOUD_URL:-Not Configured}/health\`) | **$CLOUD_STATUS** | - |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$STATUS" != "200" ]; then
+            echo "Monitor check failed: HTTP $STATUS"
+            exit 1
+          fi
+
+      - name: Open Incident Alert Issue on Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '[Alert] DevPulse Live Healthcheck Failed',
+              body: `모니터링 헬스체크 실패가 감지되었습니다.\n- **Frontend Status**: ${{ steps.check.outputs.frontend_status }}\n- **Cloud Status**: ${{ steps.check.outputs.cloud_status }}\n- **Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
+            });
